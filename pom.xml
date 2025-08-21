@@ -52,12 +52,18 @@
             <artifactId>mysql-connector-j</artifactId>
             <scope>runtime</scope>
         </dependency>
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
     </dependencies>
 
     <build>
