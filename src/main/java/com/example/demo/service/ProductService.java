@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+
 @Service
 public class ProductService {
 
@@ -15,24 +16,35 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public Product saveProduct(Product product) {
+    // Create product
+    public Product createProduct(Product product) {
         return productRepository.save(product);
     }
 
-    public void deleteProduct(int id) {
-        productRepository.deleteById(id);
+    // Get all products
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
     }
 
-    public Product updateProduct(int id, Product product) {
-        product.setId(id);
-        return productRepository.save(product);
-    }
-
-    public Optional<Product> getProductById(int id) {
+    // Get product by id
+    public Optional<Product> getProductById(Long id) {
         return productRepository.findById(id);
     }
 
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+    // Update product
+    public Product updateProduct(Long id, Product updatedProduct) {
+        return productRepository.findById(id).map(product -> {
+            product.setName(updatedProduct.getName());
+            product.setDescription(updatedProduct.getDescription());
+            product.setImageUrl(updatedProduct.getImageUrl());
+            product.setPrice(updatedProduct.getPrice());
+            product.setCategory(updatedProduct.getCategory());
+            return productRepository.save(product);
+        }).orElseThrow(() -> new RuntimeException("Product not found"));
+    }
+
+    // Delete product
+    public void deleteProduct(Long id) {
+        productRepository.deleteById(id);
     }
 }
