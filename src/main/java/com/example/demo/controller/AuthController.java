@@ -1,17 +1,16 @@
 package com.example.demo.controller;
 
-
-
 import com.example.demo.service.AuthService;
-import com.example.demo.dto.LoginRequest;
-import com.example.demo.dto.SignupRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/auth")
+@CrossOrigin(origins = "*")
 public class AuthController {
-
+    
     private final AuthService authService;
 
     public AuthController(AuthService authService) {
@@ -19,39 +18,16 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-        try {
-            String token = authService.login(request.getEmail(), request.getPassword());
-            String role = authService.getUserRole(request.getEmail());
-            return ResponseEntity.ok(new AuthResponse(token, role, "Login successful"));
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(401).body(e.getMessage());
+    public ResponseEntity<?> login(@RequestBody Map<String, String> loginRequest) {
+        String email = loginRequest.get("email");
+        String password = loginRequest.get("password");
+        
+        String token = authService.authenticateAndGenerateToken(email, password);
+        
+        if (token != null) {
+            return ResponseEntity.ok(Map.of("token", token, "message", "Login successful"));
+        } else {
+            return ResponseEntity.status(401).body(Map.of("message", "Invalid credentials"));
         }
-    }
-
-    @PostMapping("/signup")
-    public ResponseEntity<?> signup(@RequestBody SignupRequest request) {
-        try {
-            authService.signup(request);
-            return ResponseEntity.status(201).body("User registered successfully");
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(409).body(e.getMessage());
-        }
-    }
-
-    public static class AuthResponse {
-        private String token;
-        private String role;
-        private String message;
-
-        public AuthResponse(String token, String role, String message) {
-            this.token = token;
-            this.role = role;
-            this.message = message;
-        }
-
-        public String getToken() { return token; }
-        public String getRole() { return role; }
-        public String getMessage() { return message; }
     }
 }

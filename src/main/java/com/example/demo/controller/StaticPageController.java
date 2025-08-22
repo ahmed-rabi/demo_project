@@ -27,36 +27,7 @@ public class StaticPageController {
         StaticPage setting = service.getFirstSetting();
         return setting != null ? setting.getTermsAndConditions() : null;
     }
-    // ✅ Get logo
-    @GetMapping("/logo")
-    public String getLogo() {
-        StaticPage setting = service.getFirstSetting();
-        return setting != null ? setting.getLogoUrl() : null;
-    }
-    // ✅ Get about image
-    @GetMapping("/about-image")
-    public String getAboutImage() {
-        StaticPage setting = service.getFirstSetting();
-        return setting != null ? setting.getAboutImageUrl() : null;
-    }
-    // ✅ Get address
-    @GetMapping("/address")
-    public String getAddress() {
-        StaticPage setting = service.getFirstSetting();
-        return setting != null ? setting.getAddress() : null;
-    }
-    // ✅ Get name
-    @GetMapping("/name")
-    public String getName() {
-        StaticPage setting = service.getFirstSetting();
-        return setting != null ? setting.getName() : null;
-    }
-    // ✅ Get working hours
-    @GetMapping("/working-hours")
-    public int getWorkingHours() {
-        StaticPage setting = service.getFirstSetting();
-        return setting != null ? setting.getWorkingHours() : null;
-    }
+
     // ✅ Get Facebook URL
     @GetMapping("/facebook")
     public String getFacebookUrl() {
