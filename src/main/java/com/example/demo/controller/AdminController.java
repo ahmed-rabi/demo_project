@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.Order;
+import com.example.demo.entity.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;

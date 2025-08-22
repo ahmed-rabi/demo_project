@@ -1,7 +1,7 @@
-package com.example.demo.model;
+package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import java.math.BigDecimal;
+
 import java.util.Date;
 
 @Entity
