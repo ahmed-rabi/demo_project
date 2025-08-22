@@ -1,10 +1,10 @@
-package com.example.demo.Controller;
+package com.example.demo.controller;
 
 
 
-import com.example.demo.Service.AuthService;
-import com.example.demo.Dto.LoginRequest;
-import com.example.demo.Dto.SignupRequest;
+import com.example.demo.service.AuthService;
+import com.example.demo.dto.LoginRequest;
+import com.example.demo.dto.SignupRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

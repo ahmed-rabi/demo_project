@@ -1,8 +1,8 @@
-package com.example.demo.Service;
+package com.example.demo.service;
 
-import com.example.demo.Dto.SignupRequest;
-import com.example.demo.Entity.User;
-import com.example.demo.Repository.UserRepository;
+import com.example.demo.dto.SignupRequest;
+import com.example.demo.entity.User;
+import com.example.demo.repository.UserRepository;
 import com.example.demo.config.JwtUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -62,5 +62,7 @@ public class AuthService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
         return user.getRole();
     }
+
+
 
 }
