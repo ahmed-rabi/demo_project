@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 
 
+import com.example.demo.dto.ResetPasswordRequest;
 import com.example.demo.service.AuthService;
 import com.example.demo.dto.LoginRequest;
 import com.example.demo.dto.SignupRequest;
@@ -38,6 +39,16 @@ public class AuthController {
             return ResponseEntity.status(409).body(e.getMessage());
         }
     }
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordRequest request) {
+        try {
+            authService.resetPassword(request.getEmail(), request.getNewPassword());
+            return ResponseEntity.ok("Password updated successfully");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        }
+    }
+
 
     public static class AuthResponse {
         private String token;
