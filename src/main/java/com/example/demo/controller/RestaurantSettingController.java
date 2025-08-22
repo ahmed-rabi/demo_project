@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.entity.RestaurantSetting;
 import com.example.demo.service.RestaurantSettingService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;  // ADD THIS IMPORT
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,8 +17,9 @@ public class RestaurantSettingController {
         this.restaurantSettingService = restaurantSettingService;
     }
 
-    // GET restaurant settings - Spring Security handles authentication
+    // GET restaurant settings - Protected with ADMIN role
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")  // ADD THIS LINE
     public ResponseEntity<RestaurantSetting> getRestaurantSettings() {
         RestaurantSetting settings = restaurantSettingService.getSettings();
         if (settings != null) {
@@ -27,8 +29,9 @@ public class RestaurantSettingController {
         }
     }
 
-    // PUT update restaurant settings
+    // PUT update restaurant settings - Protected with ADMIN role
     @PutMapping
+    @PreAuthorize("hasRole('ADMIN')")  // ADD THIS LINE
     public ResponseEntity<RestaurantSetting> updateRestaurantSettings(@RequestBody RestaurantSetting settings) {
         try {
             RestaurantSetting updatedSettings = restaurantSettingService.updateSettings(settings);
@@ -38,8 +41,9 @@ public class RestaurantSettingController {
         }
     }
 
-    // POST preview settings
+    // POST preview settings - Protected with ADMIN role
     @PostMapping("/preview")
+    @PreAuthorize("hasRole('ADMIN')")  // ADD THIS LINE
     public ResponseEntity<RestaurantSetting> previewRestaurantSettings(@RequestBody RestaurantSetting settings) {
         try {
             RestaurantSetting previewedSettings = restaurantSettingService.previewSettings(settings);
