@@ -9,6 +9,8 @@ import java.util.Optional;
 public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Order> findByStatus(String status);
     List<Order> findByTimestampsBetween(Date startDate, Date endDate);
+    List<Order> findByCustomerId(Long customerId);
+    Optional<Order> findByIdAndCustomerId(Long id, Long customerId);
     List<Order> findByStatusAndTimestampsBetween(String status, Date startDate, Date endDate);
     Optional<Order> findByCustomerIdAndStatus(Long customerId, String status);
 }

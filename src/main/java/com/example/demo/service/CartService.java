@@ -8,12 +8,17 @@ import java.util.Map;
 public class CartService {
     // In-memory cart storage
     private final Map<Long, Map<Long, CartItem>> customerCarts = new HashMap<>();
-
+    // Add this method to CartService.java
+    public Map<Long, Map<Long, CartItem>> getCustomerCarts() {
+        return customerCarts;
+    }
     public Map<String, Object> getCart(Long customerId) {
         Map<Long, CartItem> cart = customerCarts.getOrDefault(customerId, new HashMap<>());
         return convertToResponse(cart);
     }
-
+    public Map<Long, CartItem> getCartMap(Long customerId) {
+        return customerCarts.getOrDefault(customerId, new HashMap<>());
+    }
     public Map<String, Object> addToCart(Long customerId, Long productId, int quantity) {
         Map<Long, CartItem> cart = customerCarts.computeIfAbsent(customerId, k -> new HashMap<>());
 
