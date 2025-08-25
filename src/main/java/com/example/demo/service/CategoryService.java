@@ -35,7 +35,7 @@ public class CategoryService {
     public Category updateCategory(Long id, Category updatedCategory) {
         return categoryRepository.findById(id).map(category -> {
             category.setName(updatedCategory.getName());
-            category.setMenuId(updatedCategory.getMenuId());
+            category.setMenu(updatedCategory.getMenu()); 
             return categoryRepository.save(category);
         }).orElseThrow(() -> new RuntimeException("Category not found"));
     }
