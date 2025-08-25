@@ -1,4 +1,6 @@
 package com.example.demo.service;
+import com.example.demo.entity.Product;
+import com.example.demo.repository.ProductRepository;
 
 import org.springframework.stereotype.Service;
 import java.util.HashMap;
@@ -6,8 +8,13 @@ import java.util.Map;
 
 @Service
 public class CartService {
+
+    private final ProductRepository productRepository;
     // In-memory cart storage
     private final Map<Long, Map<Long, CartItem>> customerCarts = new HashMap<>();
+    public CartService(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
     // Add this method to CartService.java
     public Map<Long, Map<Long, CartItem>> getCustomerCarts() {
         return customerCarts;
@@ -21,6 +28,8 @@ public class CartService {
     }
     public Map<String, Object> addToCart(Long customerId, Long productId, int quantity) {
         Map<Long, CartItem> cart = customerCarts.computeIfAbsent(customerId, k -> new HashMap<>());
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found with id: " + productId));
 
         if (cart.containsKey(productId)) {
             CartItem existingItem = cart.get(productId);
@@ -32,7 +41,7 @@ public class CartService {
             newItem.setProductId(productId);
             newItem.setProductName("Product " + productId);
             newItem.setProductImage("/images/product" + productId + ".jpg");
-            newItem.setPrice(10 * productId.intValue()); // Demo price
+            newItem.setPrice(product.getPrice());
             newItem.setQuantity(quantity);
             newItem.setSubtotal(newItem.getPrice() * quantity);
             cart.put(productId, newItem);

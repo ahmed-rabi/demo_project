@@ -1,7 +1,11 @@
 package com.example.demo.controller;
 
+import com.example.demo.config.JwtUtils;
 import com.example.demo.entity.Order;
+import com.example.demo.entity.User;
+import com.example.demo.repository.UserRepository;
 import com.example.demo.service.OrderService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +21,37 @@ public class CartController {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private JwtUtils jwtUtils;   // ✅ inject JWT utils
+
+    @Autowired
+    private UserRepository userRepository;  // ✅ to fetch user
+
+    @Autowired
+    private HttpServletRequest request;  // ✅ to read token from headers
+
+    // ... all your endpoints remain the same
+
+    private Long getCurrentCustomerId() {
+        //
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new RuntimeException("Missing or invalid Authorization header");
+        }
+
+        String token = authHeader.substring(7);
+
+
+        String email = jwtUtils.extractEmail(token);
+
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return user.getId();
+    }
+
 
     @GetMapping
     public ResponseEntity<?> getCart() {
@@ -111,9 +146,5 @@ public class CartController {
         }
     }
 
-    private Long getCurrentCustomerId() {
-        // In a real application, you would get this from the authentication context
-        // For demo purposes, we'll use a fixed customer ID
-        return 1L;
-    }
+
 }
