@@ -16,7 +16,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/tables")
-@PreAuthorize("hasRole('ADMIN')")
 public class TableController {
 
     private final TableService tableService;
@@ -26,6 +25,7 @@ public class TableController {
         this.tableService = tableService;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<RestaurantTable> getTableById(@PathVariable Long id) {
         return tableService.getTableById(id)
@@ -33,17 +33,20 @@ public class TableController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<RestaurantTable>> getAllTables() {
         return ResponseEntity.ok(tableService.getAllTables());
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/createTable")
     public ResponseEntity<RestaurantTable> createTable(@RequestBody RestaurantTable table) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(tableService.saveTable(table));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<RestaurantTable> updateTable(
             @PathVariable Long id,
@@ -56,6 +59,7 @@ public class TableController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTable(@PathVariable Long id) {
         if (tableService.getTableById(id).isEmpty()) {
@@ -65,6 +69,7 @@ public class TableController {
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{id}/generate-qr")
     public ResponseEntity<RestaurantTable> generateTableQRCode(@PathVariable Long id) {
         try {
@@ -77,9 +82,8 @@ public class TableController {
         }
     }
 
-    /**
-     * Get QR code image for a table
-     */
+
+    @PreAuthorize("hasRole('CASHIER') or hasRole('ADMIN')")
     @GetMapping("/{id}/qr-code")
     public ResponseEntity<byte[]> getTableQRCode(@PathVariable Long id) {
         try {
