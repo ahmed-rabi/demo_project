@@ -4,7 +4,6 @@ import com.example.demo.entity.Menu;
 import com.example.demo.service.MenuService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-//import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
@@ -18,36 +17,34 @@ public class MenuController {
         this.menuService = menuService;
     }
 
-    // ✅ POST -> create menu
+    // ✅ POST -> create menu (only ADMIN)
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public Menu createMenu(@RequestBody Menu menu) {
         return menuService.createMenu(menu);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    // ✅ GET -> all menus
+    // ✅ GET -> all menus (anyone can see)
     @GetMapping
     public List<Menu> getAllMenus() {
         return menuService.getAllMenus();
     }
 
-    // ✅ GET -> one menu by id
-    @PreAuthorize("hasRole('ADMIN')")
+    // ✅ GET -> one menu by id (anyone can see)
     @GetMapping("/{id}")
     public Menu getMenuById(@PathVariable Long id) {
         return menuService.getMenuById(id)
                 .orElseThrow(() -> new RuntimeException("Menu not found"));
     }
 
-    // ✅ PUT -> update menu
+    // ✅ PUT -> update menu (only ADMIN)
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public Menu updateMenu(@PathVariable Long id, @RequestBody Menu menu) {
         return menuService.updateMenu(id, menu);
     }
 
-    // ✅ DELETE -> delete menu
+    // ✅ DELETE -> delete menu (only ADMIN)
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public void deleteMenu(@PathVariable Long id) {
