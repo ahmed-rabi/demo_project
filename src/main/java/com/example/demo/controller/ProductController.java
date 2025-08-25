@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.entity.Product;
 import com.example.demo.service.ProductService;
 // import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public class ProductController {
     }
 
     // ✅ POST -> create product (Admin only)
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public Product createProduct(@RequestBody Product product) {
         return productService.createProduct(product);
@@ -38,14 +39,14 @@ public class ProductController {
     }
 
     // ✅ PUT -> update product (Admin only)
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public Product updateProduct(@PathVariable Long id, @RequestBody Product product) {
         return productService.updateProduct(id, product);
     }
 
     // ✅ DELETE -> remove product (Admin only)
-    // @PreAuthorize("hasRole('ADMIN')")
+     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public void deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
