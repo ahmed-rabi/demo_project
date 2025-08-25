@@ -1,13 +1,16 @@
 package com.example.demo.service;
 
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.WriterException;
+import com.google.zxing.*;
+import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
+import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.QRCodeWriter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -58,5 +61,24 @@ public class QRCodeService {
         MatrixToImageWriter.writeToStream(bitMatrix, "PNG", baos);
 
         return baos.toByteArray();
+    }
+
+    public String readQRCode(byte[] imageData) throws IOException {
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(imageData);
+        BufferedImage bufferedImage = ImageIO.read(inputStream);
+
+        if (bufferedImage == null) {
+            throw new IOException("Could not decode image");
+        }
+
+        BufferedImageLuminanceSource source = new BufferedImageLuminanceSource(bufferedImage);
+        BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
+
+        try {
+            Result result = new MultiFormatReader().decode(bitmap);
+            return result.getText();
+        } catch (com.google.zxing.NotFoundException e) {
+            throw new IOException("No QR code found in the image", e);
+        }
     }
 }
