@@ -1,11 +1,6 @@
 package com.example.demo.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.Id;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Column;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "category")
@@ -18,8 +13,13 @@ public class Category {
     @Column(nullable = false)
     private String name;
 
-    @Column(name = "menu_id")
-    private Long menuId;
+    @ManyToOne(optional = false)
+    @JoinColumn(
+            name = "menu_id",            
+            nullable = false,
+            foreignKey = @ForeignKey(name = "fk_category_menu")
+    )
+    private Menu menu;
 
     // Getters and setters
     public Long getId() {
@@ -38,11 +38,11 @@ public class Category {
         this.name = name;
     }
 
-    public Long getMenuId() {
-        return menuId;
+    public Menu getMenu() {
+        return menu;
     }
 
-    public void setMenuId(Long menuId) {
-        this.menuId = menuId;
+    public void setMenu(Menu menu) {
+        this.menu = menu;
     }
 }
