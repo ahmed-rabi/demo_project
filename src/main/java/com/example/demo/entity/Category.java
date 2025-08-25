@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -13,6 +14,7 @@ public class Category {
     @Column(nullable = false)
     private String name;
 
+    @JsonBackReference
     @ManyToOne(optional = false)
     @JoinColumn(
             name = "menu_id",            

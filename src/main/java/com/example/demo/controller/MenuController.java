@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.Menu;
 import com.example.demo.service.MenuService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 //import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -18,12 +19,13 @@ public class MenuController {
     }
 
     // ✅ POST -> create menu
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public Menu createMenu(@RequestBody Menu menu) {
         return menuService.createMenu(menu);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     // ✅ GET -> all menus
     @GetMapping
     public List<Menu> getAllMenus() {
@@ -31,6 +33,7 @@ public class MenuController {
     }
 
     // ✅ GET -> one menu by id
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public Menu getMenuById(@PathVariable Long id) {
         return menuService.getMenuById(id)
@@ -38,14 +41,14 @@ public class MenuController {
     }
 
     // ✅ PUT -> update menu
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public Menu updateMenu(@PathVariable Long id, @RequestBody Menu menu) {
         return menuService.updateMenu(id, menu);
     }
 
     // ✅ DELETE -> delete menu
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public void deleteMenu(@PathVariable Long id) {
         menuService.deleteMenu(id);
