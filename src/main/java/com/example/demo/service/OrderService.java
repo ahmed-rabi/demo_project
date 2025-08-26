@@ -1,18 +1,12 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.Order;
-import com.example.demo.entity.OrderItem;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.demo.entity.*;
+        import com.example.demo.repository.*;
+        import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.example.demo.repository.OrderItemRepository;
-import com.example.demo.repository.OrderRepository;
-import com.example.demo.repository.ProductRepository;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.ArrayList;
-import java.util.Optional;
+
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Service
 public class OrderService {
@@ -26,6 +20,13 @@ public class OrderService {
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
+    private OrderStatusChangeRepository orderStatusChangeRepository;
+
+    @Autowired
+    private NotificationRepository notificationRepository;
+
+    // ✅ Get all orders with filters
     public List<Order> getAllOrders(String status, Date startDate, Date endDate) {
         if (status != null && startDate != null && endDate != null) {
             return orderRepository.findByStatusAndTimestampsBetween(status, startDate, endDate);
@@ -38,19 +39,38 @@ public class OrderService {
         }
     }
 
+    // ✅ Get single order
     public Order getOrderById(Long id) {
         return orderRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Order not found with id: " + id));
     }
 
-    public Order updateOrderStatus(Long id, String status) {
+    // ✅ Update order status + log change + send notification
+    public String updateOrderStatus(Long id, String status) {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Order not found with id: " + id));
 
+        // Update order
         order.setStatus(status);
-        return orderRepository.save(order);
+        orderRepository.save(order);
+
+        // Log status change
+        OrderStatusChange change = new OrderStatusChange();
+        change.setOrder(order);
+        change.setStatus(status);
+        change.setCreatedAt(LocalDateTime.now());
+        orderStatusChangeRepository.save(change);
+
+        // Create customer notification
+        Notification notif = new Notification();
+        notif.setCustomerId(order.getCustomerId());
+        notif.setMessage("Your order #" + order.getId() + " status updated to: " + status);
+        notificationRepository.save(notif);
+
+        return "Order status updated and customer notified";
     }
 
+    // ✅ Order details with items
     public Map<String, Object> getOrderDetails(Long id) {
         Order order = getOrderById(id);
         List<OrderItem> items = orderItemRepository.findByOrderId(id);
@@ -62,7 +82,7 @@ public class OrderService {
         return response;
     }
 
-    // New method to create an order from cart items
+    // ✅ Create order from cart
     public Order createOrder(Long customerId, Long tableId, Map<Long, CartService.CartItem> cartItems) {
         Order order = new Order();
         order.setCustomerId(customerId);
@@ -77,7 +97,7 @@ public class OrderService {
 
         Order savedOrder = orderRepository.save(order);
 
-        // Create order items
+        // Save items
         List<OrderItem> orderItems = new ArrayList<>();
         for (CartService.CartItem cartItem : cartItems.values()) {
             OrderItem orderItem = new OrderItem();
@@ -92,12 +112,12 @@ public class OrderService {
         return savedOrder;
     }
 
-    // New method to get all orders for a customer
+    // ✅ Customer orders
     public List<Order> getCustomerOrders(Long customerId) {
         return orderRepository.findByCustomerId(customerId);
     }
 
-    // New method to get order details for a specific customer
+    // ✅ Customer order details
     public Map<String, Object> getCustomerOrderDetails(Long orderId, Long customerId) {
         Order order = orderRepository.findByIdAndCustomerId(orderId, customerId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
